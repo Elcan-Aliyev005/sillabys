@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        @keyframes upDown {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        #top-btn {
+            animation: upDown 1s infinite ease-in-out;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+        }
+
+        body {
+            background-color: #f9f9f9;
+        }
+
+        .glass {
+            box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .main h3 {
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+
+        .active h3 {
+            background-color:  darkblue;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .additionals {
+            background-color: #fff;
+            width: calc(100% - 20px);
+            top: 56px;
+            z-index: 99;
+            position: absolute;
+            flex-direction: column;
+            gap: 10px;
+            display: none;
+            cursor: pointer;
+            translate: -100% 0;
+        }
+
+        .main:hover .additionals,
+        .additionals:hover {
+            translate: 0 0;
+            display: flex;
+        }
+    </style>
+    <title>Modern Front-End Guide</title>
+</head>
+
+<body>
+    <header class="glass !bg-[darkblue] px-[10px] text-[#fff]">
+        <div class="container mx-auto py-[10px]">
+            <h2 class="text-[26px]">Modern Front-End Development Guide</h2>
+            <h3 class="text-[16px]">Instructor: Elcan Ali</h3>
+        </div>
+    </header>
+
+    <main class="px-[10px]">
+        <div class="container mx-auto py-[60px]">
+            <div id="btns" class="flex mb-[40px] flex-wrap gap-[25px]"></div>
+            <div id="techs"></div>
+            <div id="lessons" class="lessons py-[20px] mb-[50px] flex items-strech flex-wrap gap-[20px]"></div>
+
+            <a href="#top" id="top-btn" class="bg-[green] flex items-center justify-center h-[40px] w-[40px] rounded text-[#fff]">
+                ↑
+            </a>
+        </div>
+    </main>
+
+    <script src="./data.js"></script>
+    <script>
+        const techsEl = document.querySelector("#techs");
+        const lessonsEl = document.querySelector("#lessons");
+        const btnsEl = document.querySelector("#btns");
+
+        const lessonsHandler = (name) =>
+            name === "" ? data : data.filter((item) => item.name.toLowerCase() === name.toLowerCase());
+
+        function btnShow() {
+            btnsEl.innerHTML = lessons.reduce((html, item) => {
+                html += `<a href="#${item.codeName}" onclick='show("${item.codeName}")' class="w-full sm:w-[calc((100%-25px)/2)] md:w-[calc((100%-50px)/3)] xl:w-[calc((100%-100px)/5)] main bg-[#fff] flex flex-col gap-[10px]">
+                    <h3 class="glass rounded-[5px] p-[20px] py-[10px]">${item.name} (${lessonsHandler(item.codeName).length})</h3>
+                </a>`;
+                return html;
+            }, `<a href="#top" onclick='show("")' class="w-full sm:w-[calc((100%-25px)/2)] md:w-[calc((100%-50px)/3)] xl:w-[calc((100%-100px)/5)] main bg-[#fff] flex flex-col gap-[10px]">
+                    <h3 class="glass rounded-[5px] p-[20px] py-[10px]">All (${lessonsHandler("").length})</h3>
+                </a>`);
+        }
+
+        function setActiveButton(codeName = "") {
+            const buttons = document.querySelectorAll("#btns .main");
+            buttons.forEach((btn) => {
+                const href = btn.getAttribute("href");
+                if (href === `#${codeName}` || (codeName === "" && href === "#top")) {
+                    btn.classList.add("active");
+                } else {
+                    btn.classList.remove("active");
+                }
+            });
+        }
+
+        function show(category = "") {
+            techsEl.innerHTML = lessons
+                .filter((item) => category === "" ? item : item.codeName === category)
+                .reduce((acc, item) => {
+                    acc += `<div class='tech' id="${item.codeName}">
+                            <h3 class='font-semibold text-[30px]'>${item.name}</h3>
+                            <div class="lessons py-[20px] mb-[50px] flex items-strech flex-wrap gap-[20px]">
+                                ${lessonsHandler(item.codeName).reduce((html, el) => {
+                                    return html += `
+                                    <div class="lesson border border-[#ccc] p-[20px] bg-[#fff] rounded-[20px] glass w-full md:w-[calc((100%-20px)/2)] xl:w-[calc((100%-40px)/3)]">
+                                        <div class='flex items-center justify-between'>
+                                            <h4 class="text-[20px] font-semibold">${el.title}</h4>
+                                            <h4 class="text-[20px] border-b-[2px] pb-[3px] border-[#f88204]">${el.name}</h4>
+                                        </div>
+                                        <ul class="line-clamp-[5] text-[16px] pt-[10px]">
+                                            ${el.desc.reduce((html, item) => html += `<li> - ${item}</li>`, "")}
+                                        </ul>
+                                    </div>`;
+                                }, "")}
+                            </div>
+                        </div>`;
+                    return acc;
+                }, "");
+
+            setActiveButton(category);
+        }
+
+        btnShow();
+        show();
+    </script>
+</body>
+
+</html>
