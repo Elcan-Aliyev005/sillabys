@@ -69,7 +69,7 @@ let data = [
         name: "HTML",
         title: "#Lesson 5",
         desc: [
-            "HTML Iframes",
+            "HTML Forms (part 1)",
         ]
     },
     {
@@ -77,7 +77,7 @@ let data = [
         name: "HTML",
         title: "#Lesson 6",
         desc: [
-            "HTML Forms",
+            "HTML Forms (part 2)",
         ]
     },
     {
